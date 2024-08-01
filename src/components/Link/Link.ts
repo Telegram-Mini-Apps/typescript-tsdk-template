@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import { classNames } from '@telegram-apps/sdk';
 
 import type { MaybeChild } from '@/types';
 import type { AppContext } from '@/context/types';
 
-import './styles.css';
 import { filterChildren } from '@/utils/filterChildren';
+
+import './styles.css';
 
 export class Link {
   private readonly el: JQuery<HTMLAnchorElement>;
@@ -20,13 +20,14 @@ export class Link {
       || targetUrl.host !== currentUrl.host;
 
     this.el = $<HTMLAnchorElement>('<a/>')
-      .attr('class', classNames('link', className))
-      .attr('href', isExternal ? href : context.navigator.renderPath(href));
+      .attr('class', 'link')
+      .addClass(className ?? '')
+      .attr('href', isExternal ? href : `#${href}`);
 
     if (isExternal) {
       this.el.on('click', (e) => {
         e.preventDefault();
-        context.utils.openLink(targetUrl.toString());
+        context.getWebApp().openLink(targetUrl.toString());
       });
     }
   }

@@ -7,7 +7,7 @@ import type { AppContext } from '@/context/types';
 export class LaunchParamsPage extends PageComponent {
   constructor(context: AppContext) {
     super(new Page({ title: 'Launch Params' }));
-    const { launchParams: lp } = context;
+    const { platform, version, initDataUnsafe } = context.getWebApp();
     this
       .page
       .setDisclaimer([
@@ -22,11 +22,9 @@ export class LaunchParamsPage extends PageComponent {
       .appendChild(
         new DisplayData({
           rows: [
-            { title: 'tgWebAppPlatform', value: lp.platform },
-            { title: 'tgWebAppShowSettings', value: lp.showSettings },
-            { title: 'tgWebAppVersion', value: lp.version },
-            { title: 'tgWebAppBotInline', value: lp.botInline },
-            { title: 'tgWebAppStartParam', value: lp.startParam },
+            { title: 'tgWebAppPlatform', value: platform },
+            { title: 'tgWebAppVersion', value: version },
+            { title: 'tgWebAppStartParam', value: initDataUnsafe?.start_param },
             {
               title: 'tgWebAppData',
               value: new Link({ href: '/init-data' }, context)

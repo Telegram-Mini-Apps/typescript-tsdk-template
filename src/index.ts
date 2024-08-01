@@ -1,68 +1,43 @@
-import {
-  initWeb,
-  isIframe,
-  retrieveLaunchParams,
-  setDebug,
-} from '@telegram-apps/sdk';
-
-import { mockEnv } from '@/mockEnv.js';
 import { type RoutePage, routes } from '@/navigation/routes';
-import { initComponents } from '@/initComponents';
-import { initNavigator } from '@/initNavigator';
 import { initTonConnectUI } from '@/initTonConnectUI';
+import { getWebApp } from '@/utils/getWebApp';
 import type { AppContext } from '@/context/types.js';
 
 import './index.css';
 
-if (import.meta.env.DEV) {
-  // It is important, to mock the environment only for development purposes. When building the
-  // application, import.meta.env.DEV will become false, and the code inside will be tree-shaken,
-  // so you will not see it in your final bundle.
-  mockEnv();
-}
-
-const launchParams = retrieveLaunchParams();
-
-// Launch eruda and enable SDK debug mode, if debug mode was requested outside.
-const debug = launchParams.startParam === 'debug';
-if (debug) {
-  import('eruda').then((lib) => lib.default.init());
-  setDebug(debug);
-}
-
-// The web version of Telegram is capable of sending some specific CSS styles we would
-// like to catch.
-if (isIframe()) {
-  initWeb(true);
-}
-
-const {
-  miniApp,
-  viewport,
-  utils,
-  themeParams,
-  initData,
-} = await initComponents();
-const navigator = await initNavigator();
 const tonConnectUI = initTonConnectUI();
 
-const root = document.getElementById('root')!;
 const appContext: AppContext = {
-  initData,
-  launchParams,
-  miniApp,
-  navigator,
-  themeParams,
-  utils,
-  viewport,
   tonConnectUI,
+  getWebApp,
 };
+
+const webApp = getWebApp();
+
+// Launch eruda and enable SDK debug mode, if debug mode was requested outside.
+const debug = webApp.initDataUnsafe.start_param === 'debug';
+if (debug) {
+  import('eruda').then((lib) => lib.default.init());
+}
+
+webApp.BackButton.onClick(goBack);
+
+window.addEventListener('hashchange', () => {
+  const path = window.location.hash.slice(1);
+  renderCurrentRoute(path);
+  updateBackButton(path)
+})
+
+renderCurrentRoute(window.location.hash.slice(1));
+
+const root = document.getElementById('root')!;
+
 let prevPage: RoutePage;
 
-function renderCurrentRoute() {
-  const route = routes.find(r => r.pathname === navigator.pathname);
+function renderCurrentRoute(path: string) {
+  const route = routes.find(r => r.pathname === path);
   if (!route) {
-    navigator.replace('/');
+    window.location.hash = '#/';
     return;
   }
   prevPage && prevPage.destroy && prevPage.destroy();
@@ -71,5 +46,14 @@ function renderCurrentRoute() {
   prevPage.render(root);
 }
 
-navigator.on('change', renderCurrentRoute);
-renderCurrentRoute();
+function goBack() {
+  window.history.go(-1);
+}
+
+function updateBackButton(path: string) {
+  if (path === '/') {
+    webApp.BackButton.isVisible && webApp.BackButton.hide();
+  } else {
+    !webApp.BackButton.isVisible && webApp.BackButton.show();
+  }
+}
