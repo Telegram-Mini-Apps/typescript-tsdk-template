@@ -13,6 +13,8 @@ const appContext: AppContext = {
 };
 
 const webApp = getWebApp();
+const root = document.getElementById('root')!;
+let prevPage: RoutePage;
 
 // Launch eruda and enable SDK debug mode, if debug mode was requested outside.
 const debug = webApp.initDataUnsafe.start_param === 'debug';
@@ -29,10 +31,6 @@ window.addEventListener('hashchange', () => {
 })
 
 renderCurrentRoute(window.location.hash.slice(1));
-
-const root = document.getElementById('root')!;
-
-let prevPage: RoutePage;
 
 function renderCurrentRoute(path: string) {
   const route = routes.find(r => r.pathname === path);
