@@ -1,5 +1,5 @@
 {
-  "name": "typescript-template",
+  "name": "typescript-tsdk-template",
   "description": "Telegram Mini Apps application template using TypeScript and Vite.",
   "private": true,
   "version": "0.0.1",
