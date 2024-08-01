@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import { isRGB, type RGB as RGBType } from '@telegram-apps/sdk';
 
 import { RGB } from '@/components/RGB/RGB';
 
@@ -7,7 +6,11 @@ import './styles.css';
 
 export interface DisplayDataRow {
   title: string;
-  value?: RGBType | string | boolean | HTMLElement | number;
+  value?: string | boolean | HTMLElement | number;
+}
+
+function isRGB(value: string): boolean {
+  return /^#[a-f0-9]{3,6}$/i.test(value);
 }
 
 export class DisplayData {

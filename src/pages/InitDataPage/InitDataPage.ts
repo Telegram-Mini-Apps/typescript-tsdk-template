@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import type { User } from '@telegram-apps/sdk';
+import type { WebAppUser } from '@twa-dev/types'
 
 import { Page } from '@/components/Page/Page';
 import { Link } from '@/components/Link/Link';
@@ -7,42 +7,43 @@ import { DisplayData, type DisplayDataRow } from '@/components/DisplayData/Displ
 import { PageComponent } from '@/pages/PageComponent';
 import type { AppContext } from '@/context/types';
 
-function getUserRows(user: User): DisplayDataRow[] {
+// TODO: @twa-dev/sdk is outdated, as well as @twa-dev/types.
+interface ExactWebAppUser extends WebAppUser {
+  allows_write_to_pm?: boolean;
+  added_to_attachment_menu?: boolean;
+}
+
+function getUserRows(user: ExactWebAppUser): DisplayDataRow[] {
   return [
     { title: 'id', value: user.id.toString() },
     { title: 'username', value: user.username },
-    { title: 'photo_url', value: user.photoUrl },
-    { title: 'last_name', value: user.lastName },
-    { title: 'first_name', value: user.firstName },
-    { title: 'is_bot', value: user.isBot },
-    { title: 'is_premium', value: user.isPremium },
-    { title: 'language_code', value: user.languageCode },
-    { title: 'allows_to_write_to_pm', value: user.allowsWriteToPm },
-    { title: 'added_to_attachment_menu', value: user.addedToAttachmentMenu },
+    { title: 'photo_url', value: user.photo_url },
+    { title: 'last_name', value: user.last_name },
+    { title: 'first_name', value: user.first_name },
+    { title: 'is_bot', value: user.is_bot },
+    { title: 'is_premium', value: user.is_premium },
+    { title: 'language_code', value: user.language_code },
+    { title: 'allows_to_write_to_pm', value: user.allows_write_to_pm },
+    { title: 'added_to_attachment_menu', value: user.added_to_attachment_menu },
   ];
 }
 
 export class InitDataPage extends PageComponent {
   constructor(context: AppContext) {
     super(new Page({ title: 'Init Data' }));
-    const {
-      launchParams: {
-        initDataRaw,
-      },
-      initData,
-    } = context;
+    const { initData: initDataRaw, initDataUnsafe: initData } = context.getWebApp();
+
     const initDataRows: DisplayDataRow[] | undefined = initData && initDataRaw
       ? [
         { title: 'raw', value: initDataRaw },
-        { title: 'auth_date', value: initData.authDate.toLocaleString() },
-        { title: 'auth_date (raw)', value: initData.authDate.getTime() / 1000 },
+        { title: 'auth_date', value: new Date(initData.auth_date * 1000).toLocaleString() },
+        { title: 'auth_date (raw)', value: initData.auth_date },
         { title: 'hash', value: initData.hash },
-        { title: 'can_send_after', value: initData.canSendAfterDate?.toISOString() },
-        { title: 'can_send_after (raw)', value: initData.canSendAfter },
-        { title: 'query_id', value: initData.queryId },
-        { title: 'start_param', value: initData.startParam },
-        { title: 'chat_type', value: initData.chatType },
-        { title: 'chat_instance', value: initData.chatInstance },
+        { title: 'can_send_after', value: initData.can_send_after },
+        { title: 'query_id', value: initData.query_id },
+        { title: 'start_param', value: initData.start_param },
+        { title: 'chat_type', value: initData.chat_type },
+        { title: 'chat_instance', value: initData.chat_instance },
       ] : undefined;
     const userRows = initData && initData.user
       ? getUserRows(initData.user)
@@ -56,7 +57,7 @@ export class InitDataPage extends PageComponent {
         { title: 'title', value: initData.chat.title },
         { title: 'type', value: initData.chat.type },
         { title: 'username', value: initData.chat.username },
-        { title: 'photo_url', value: initData.chat.photoUrl },
+        { title: 'photo_url', value: initData.chat.photo_url },
       ]
       : undefined;
 

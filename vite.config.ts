@@ -3,7 +3,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 // import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
-  base: '/typescript-template',
+  base: '/typescript-tsdk-template',
   plugins: [
     // Allows using the compilerOptions.paths property in tsconfig.json.
     // https://www.npmjs.com/package/vite-tsconfig-paths

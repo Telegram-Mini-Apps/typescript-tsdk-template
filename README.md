@@ -8,7 +8,7 @@ Mini Apps platform using the following technologies and libraries
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [TON Connect](https://docs.ton.org/develop/dapps/ton-connect/overview)
-- [@telegram-apps SDK](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk)
+- [Telegram SDK](https://core.telegram.org/bots/webapps#initializing-mini-apps)
 - [Vite](https://vitejs.dev/)
 
 > This boilerplate was created using [pnpm](https://pnpm.io/). Therefore, it is required to use
@@ -76,7 +76,7 @@ devices in the same network with the current device.
 To view the application, you need to open the `Local`
 link (`http://localhost:5173/typescript-template` in this example) in your browser.
 
-It is important to note that some libraries in this template, such as `@telegram-apps/sdk`, are not
+It is important to note that some libraries in this template, such as Telegram SDK, are not
 intended for use outside of Telegram.
 
 Nevertheless, they appear to function properly. This is because the `src/mockEnv.ts` file, which is
